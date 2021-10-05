@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+# csv files
+<!-- .csv/reviews.csv
+.csv/reviews_photos.csv
+.csv/product.csv
+.csv/characteristics.csv
+.csv/characteristics_reviews.csv -->
+*.csv
