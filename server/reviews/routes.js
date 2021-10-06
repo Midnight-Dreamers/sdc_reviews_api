@@ -3,7 +3,7 @@ const controller = require('./controller');
 
 const router = Router();
 
-router.get('/', controller.getReviews);
+router.get('/', controller.get10Reviews);
 router.get("/:id", controller.getReviewById);
 router.post('/', controller.addReview);
 router.put('/:id/helpful', controller.markHelpful);

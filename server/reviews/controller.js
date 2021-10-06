@@ -1,7 +1,7 @@
 const pool = require('../db');
 const queries = require('./queries');
-const getReviews = (req, res) => { //todo get 10 reviews
-  pool.query(queries.getReviews, (error, results)=>{
+const get10Reviews = (req, res) => { //todo get 10 reviews
+  pool.query(queries.get10Reviews, (error, results)=>{
     if (error) throw error;
 
     res.status(200).json(results.rows); //array of objs
@@ -46,7 +46,7 @@ const getMeta = (req, res) => {
   })
 }
 module.exports = {
-  getReviews,
+  get10Reviews,
   getReviewById,
   addReview,
   markHelpful,

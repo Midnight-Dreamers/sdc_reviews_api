@@ -1,4 +1,4 @@
-const getReviews = "SELECT * FROM reviews LIMIT 10";
+const get10Reviews = "SELECT * FROM reviews LIMIT 10";
 const getReviewPhotos = "SELECT * FROM reviews_photos WHERE review_id = $1" ;
 const getReviewById =
 `SELECT array(
@@ -30,17 +30,50 @@ const markReport = `UPDATE reviews SET reported = true WHERE id = $1`
 
 const getMeta = `SELECT jsonb_build_object(
   'rating', (SELECT jsonb_build_object(
-    '1', (SELECT count(*) FROM reviews where rating = 1),
-    '2', (SELECT count(*) FROM reviews where rating = 2),
-    '3', (SELECT count(*) FROM reviews where rating = 3),
-    '4', (SELECT count(*) FROM reviews where rating = 4),
-    '5', (SELECT count(*) FROM reviews where rating = 5)
+    '1', (SELECT count(*) FROM reviews where product_id = $1 and rating = 1),
+    '2', (SELECT count(*) FROM reviews where product_id = $1 and rating = 2),
+    '3', (SELECT count(*) FROM reviews where product_id = $1 and rating = 3),
+    '4', (SELECT count(*) FROM reviews where product_id = $1 and rating = 4),
+    '5', (SELECT count(*) FROM reviews where product_id = $1 and rating = 5)
   )),
   'recommend', (jsonb_build_object(
-    '0', (SELECT count(recommend) FROM reviews where recommend = true),
-    '1', (SELECT count(recommend) FROM reviews where recommend = false)
+    '0', (SELECT count(recommend) FROM reviews where product_id = $1 and recommend = true),
+    '1', (SELECT count(recommend) FROM reviews where product_id = $1 and recommend = false)
   )),
   'characteristics', (
+    SELECT (
+      json_object_agg(
+        name, json_build_object(
+          'id', id,
+          'value', avg
+        )
+      )
+    )
+    FROM (select char.name, char.id, avg(charreview.value) from characteristics as char inner join characteristic_reviews as charreview on char.id = charreview.characteristic_id where char.product_id = $1 group by char.id) as ntable
+  )
+) FROM reviews WHERE product_id = $1`;
+
+
+module.exports = {
+  get10Reviews, getReviewById, getReviewPhotos, addReview, markHelpful, markReport, getMeta
+}
+
+
+
+/*'rating', (SELECT jsonb_build_object(
+    '1', (SELECT count(*) FROM reviews where product_id = $1 and rating = 1),
+    '2', (SELECT count(*) FROM reviews where product_id = $1 and rating = 2),
+    '3', (SELECT count(*) FROM reviews where product_id = $1 and rating = 3),
+    '4', (SELECT count(*) FROM reviews where product_id = $1 and rating = 4),
+    '5', (SELECT count(*) FROM reviews where product_id = $1 and rating = 5)
+  )),
+  'recommend', (jsonb_build_object(
+    '0', (SELECT count(recommend) FROM reviews where product_id = $1 and recommend = true),
+    '1', (SELECT count(recommend) FROM reviews where product_id = $1 and recommend = false)
+  )), */
+
+  //--------------------initial characterisitics-----//
+  /* 'characteristics', (
     SELECT (
       json_object_agg(
         name, json_build_object(
@@ -50,14 +83,18 @@ const getMeta = `SELECT jsonb_build_object(
       )
     )
     FROM (select chara.id,  chara.name, char_review.val from (select a.id, a.name from characteristics as a where a.product_id = $1) as chara INNER JOIN (select characteristic_id, ROUND(AVG(value)) as val from characteristic_reviews  group by characteristic_id) as char_review ON chara.id = char_review.characteristic_id) as ntable
-  )
-) FROM reviews WHERE id = $1`
+  ) */
 
 
-module.exports = {
-  getReviews, getReviewById, getReviewPhotos, addReview, markHelpful, markReport, getMeta
-}
-
-/*
-`select chara.id,  chara.name, char_review.val from (select a.id, a.name from characteristics as a where a.product_id = 7) as chara INNER JOIN (select characteristic_id, ROUND(AVG(value)) as val from characteristic_reviews  group by characteristic_id) as char_review ON chara.id = char_review.characteristic_id;
-` */
+  //--------------------improved characteristics----//
+  /* 'characteristics', (
+    SELECT (
+      json_object_agg(
+        name, json_build_object(
+          'id', id,
+          'value', avg
+        )
+      )
+    )
+    FROM (select char.name, char.id, avg(charreview.value) from characteristics as char inner join characteristic_reviews as charreview on char.id = charreview.characteristic_id where char.product_id = $1 group by char.id) as ntable
+  ) */
