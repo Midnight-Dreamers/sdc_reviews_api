@@ -1,0 +1,24 @@
+{
+  "name": "sdc_reviews_api",
+  "version": "1.0.0",
+  "description": "Hack reactor backend API for review widget",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Midnight-Dreamers/sdc_reviews_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Midnight-Dreamers/sdc_reviews_api/issues"
+  },
+  "homepage": "https://github.com/Midnight-Dreamers/sdc_reviews_api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
+}
