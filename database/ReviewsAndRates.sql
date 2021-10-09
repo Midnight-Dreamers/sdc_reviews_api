@@ -1,3 +1,7 @@
+CREATE DATABASE sdc;
+
+\c sdc;
+
 
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS reviews_photos CASCADE;
@@ -54,7 +58,29 @@ create table characteristic_reviews (
 
 );
 
-COPY reviews from '/home/gaoy11/hackreactor/hr-den14-sdc_review/sdc_reviews_api/csv/reviews.csv' DELIMITER ',' CSV HEADER;
-COPY reviews_photos from '/home/gaoy11/hackreactor/hr-den14-sdc_review/sdc_reviews_api/csv/reviews_photos.csv' DELIMITER ',' CSV HEADER;
-COPY characteristics from '/home/gaoy11/hackreactor/hr-den14-sdc_review/sdc_reviews_api/csv/characteristics.csv' DELIMITER ',' CSV HEADER;
-COPY characteristic_reviews from '/home/gaoy11/hackreactor/hr-den14-sdc_review/sdc_reviews_api/csv/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+COPY reviews from '/seed/reviews.csv' DELIMITER ',' CSV HEADER;
+COPY reviews_photos from '/seed/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+COPY characteristics from '/seed/characteristics.csv' DELIMITER ',' CSV HEADER;
+COPY characteristic_reviews from '/seed/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+
+
+DROP INDEX IF EXISTS in_reviews ;
+DROP INDEX IF EXISTS in_reviews_photos ;
+DROP INDEX IF EXISTS in_reviews_id ;
+DROP INDEX IF EXISTS in_characteristics ;
+DROP INDEX IF EXISTS in_characteristics_reviews ;/*
+DROP INDEX IF EXISTS in_characteristics_reviews_id ; */
+DROP INDEX IF EXISTS in_characteristics_reviews_rid ;
+
+
+
+CREATE INDEX in_reviews ON reviews (product_id);
+CREATE INDEX in_reviews_id ON reviews (id);
+CREATE INDEX in_reviews_photos ON reviews_photos (review_id);
+CREATE INDEX in_characteristics ON characteristics (product_id);
+
+CREATE INDEX in_characteristics_reviews ON characteristic_reviews (characteristic_id);
+
+/* CREATE INDEX in_characteristics_reviews_id ON characteristic_reviews (id); */
+
+CREATE INDEX in_characteristics_reviews_rid ON characteristic_reviews (review_id);
